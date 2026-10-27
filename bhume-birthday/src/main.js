@@ -132,9 +132,7 @@ app.innerHTML = `
     </div>
     <div class="hero-draw-container">
       <div class="draw-header">
-        <div class="draw-subtitle">A Special 20th Celebration</div>
-        <h1 class="draw-title">Draw a heart</h1>
-        <div class="draw-tagline">trace with love to unlock her world</div>
+          <h1 class="draw-title">Draw a heart</h1>
       </div>
 
       <div class="draw-stage">
@@ -155,13 +153,6 @@ app.innerHTML = `
         </div>
       </div>
 
-      <div class="draw-prompt-hint">
-        <div class="draw-tip">
-          <span class="pulse-dot"></span>
-          <span>Draw in one smooth stroke</span>
-        </div>
-        <button id="skip-draw-btn" class="skip-btn">Skip unlock</button>
-      </div>
     </div>
   </div>
 
@@ -172,18 +163,12 @@ app.innerHTML = `
       <div class="hint">scroll ↓</div>
     </div>
     <svg id="svg"><path id="trail"/><circle id="dot" r="7"/></svg>
-    <div class="end" id="end">…and this is only the beginning ✦</div>
+    <div class="end" id="end" style="display: none;">…and this is only the beginning ✦</div>
   </div>
 
   <div id="diary-root"></div>
 
   <input type="file" id="birthday-file-input" accept="image/*" hidden>
-
-  <!-- Ambient Audio Control Button -->
-  <button id="audio-toggle" class="audio-control-pill" title="Toggle gentle rain sounds">
-    <span class="audio-icon">🌧️</span>
-    <span class="audio-text">Rain Drizzle: Off</span>
-  </button>
 `
 
 // ==========================================
@@ -743,18 +728,24 @@ function buildBirthday() {
     }
   })
 
+  if (bS.length) {
+    const lastPhotoPt = bS[bS.length - 1]
+    const lastSh = dim[dim.length - 1][1]
+    const trailEndY = lastPhotoPt.y + lastSh * 0.5 + 40
+    seg(W0 / 2, trailEndY)
+  }
+
   bS.forEach((p, i) => (p.m = i ? Math.max(bS[i - 1].m, p.y) : p.y))
   const last = bS[bS.length - 1]
   bTotal = last.l
-  const endY = last.y + Math.max(maxH, cw + 110) + 60
-  bH = endY + 170
+  const cardBottom = last.y + cw + 40
+  bH = Math.max(last.y, cardBottom) + 20
   bWrap.style.height = bH + 'px'
 
   bSvg.setAttribute('width', W0)
   bSvg.setAttribute('height', bH)
   bSvg.setAttribute('viewBox', `0 0 ${W0} ${bH}`)
   bTrail.setAttribute('d', 'M' + bS.map(p => p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join('L'))
-  if (bEnd) bEnd.style.top = endY + 'px'
 
   renderBirthday()
 }
